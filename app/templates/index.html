@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculate Orthodrome Service</title>
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+<body>
+    <div class="container">
+        <h1>Calculate Orthodrome Service</h1>
+
+        <div class="main-layout">
+            <div class="form-panel">
+                <form id="orthodromy-form">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Параметр</th>
+                                <th>Ввод данных</th>
+                                <th>Описание</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>point1</td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        id="point1"
+                                        name="point1"
+                                        value="POINT(30 55)"
+                                        required
+                                    >
+                                </td>
+                                <td>Начальная точка ортодромии в формате WKT</td>
+                            </tr>
+
+                            <tr>
+                                <td>point2</td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        id="point2"
+                                        name="point2"
+                                        value="POINT(40 60)"
+                                        required
+                                    >
+                                </td>
+                                <td>Конечная точка ортодромии в формате WKT</td>
+                            </tr>
+
+                            <tr>
+                                <td>cs</td>
+                                <td>
+                                    <select id="cs" name="cs">
+                                        <option value="4326">WGS84 — EPSG:4326</option>
+                                        <option value="4284">СК-42 — EPSG:4284</option>
+                                        <option value="3857">Меркатор — EPSG:3857</option>
+                                    </select>
+                                </td>
+                                <td>Система координат входных точек</td>
+                            </tr>
+
+                            <tr>
+                                <td>count</td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        id="count"
+                                        name="count"
+                                        value="5"
+                                        min="2"
+                                        required
+                                    >
+                                </td>
+                                <td>Количество узлов итоговой полилинии</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="submit">Построить ортодромию</button>
+                </form>
+
+                <h2>Результат</h2>
+                <pre id="result">Здесь появится LINESTRING...</pre>
+            </div>
+
+            <div class="map-panel">
+                <h2>Карта</h2>
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
