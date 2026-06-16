@@ -7,6 +7,11 @@ from app.services.crs import transform_point_to_wgs84, transform_coordinates_fro
 
 main = Blueprint("main", __name__)
 
+def parse_int(value: str, parameter_name: str):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{parameter_name} must be integer")
 
 @main.route("/")
 def index():
@@ -34,8 +39,8 @@ def orthodromy():
         start_x, start_y = read_point_wkt(point1)
         end_x, end_y = read_point_wkt(point2)
 
-        cs = int(cs)
-        count = int(count)
+        cs = parse_int(cs, "cs")
+        count = parse_int(count, "count")
 
         start_lon, start_lat = transform_point_to_wgs84(start_x, start_y, cs)
         end_lon, end_lat = transform_point_to_wgs84(end_x, end_y, cs)
