@@ -3,6 +3,7 @@ from flask import Blueprint, request, render_template, jsonify
 from app.services.wkt import read_point_wkt
 from app.services.orthodromy import build_orthodromy, coordinates_to_wkt
 from app.services.crs import transform_point_to_wgs84, transform_coordinates_from_wgs84
+from app.services.forbidden_zones import find_forbidden_zone_intersections,geometries_to_wkt
 
 
 main = Blueprint("main", __name__)
@@ -25,6 +26,7 @@ def orthodromy():
     cs = request.args.get("cs", "4326")
     count = request.args.get("count")
     response_format = request.args.get("format")
+    forbidden_zones = request.args.get("forbidden_zones")
 
     if not point1:
         return "Error: point1 parameter is required", 400
@@ -52,6 +54,24 @@ def orthodromy():
             end_lat,
             count
         )
+
+        intersections = find_forbidden_zone_intersections(
+            coordinates_wgs84,
+            forbidden_zones
+        )
+
+        if intersections:
+            intersections_wkt = geometries_to_wkt(intersections)
+            map_wkt = coordinates_to_wkt(coordinates_wgs84)
+
+            if response_format == "json":
+                return jsonify({
+                    "error": "Orthodromy intersects forbidden zone",
+                    "map_wkt": map_wkt,
+                    "intersections_wkt": intersections_wkt
+                }), 400
+
+            return "Error: Orthodromy intersects forbidden zone", 400
 
         result_coordinates = transform_coordinates_from_wgs84(
             coordinates_wgs84,
